@@ -1,0 +1,7 @@
+{
+    "path": "./src/",
+    "moduleName": "Config",
+    "values": [
+        "API_PATH"
+    ]
+  }

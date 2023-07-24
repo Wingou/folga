@@ -5180,7 +5180,7 @@ var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Modele$initialModel = {
 	elements: _List_Nil,
 	error: $elm$core$Maybe$Nothing,
-	inputs: {destPath: '', sourcePath: ''}
+	input: {destPath: '', sourcePath: ''}
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -5188,7 +5188,28 @@ var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Command$update = F2(
 	function (msg, model) {
-		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		var inputsModel = model.input;
+		if (msg.$ === 'SetSourcePath') {
+			var p = msg.a;
+			var input_ = _Utils_update(
+				inputsModel,
+				{sourcePath: p});
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{input: input_}),
+				$elm$core$Platform$Cmd$none);
+		} else {
+			var p = msg.a;
+			var input_ = _Utils_update(
+				inputsModel,
+				{destPath: p});
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{input: input_}),
+				$elm$core$Platform$Cmd$none);
+		}
 	});
 var $author$project$Css$Black = {$: 'Black'};
 var $author$project$Css$Border = function (a) {
@@ -5196,6 +5217,12 @@ var $author$project$Css$Border = function (a) {
 };
 var $author$project$Css$BorderColor = function (a) {
 	return {$: 'BorderColor', a: a};
+};
+var $author$project$Modele$SetDestPath = function (a) {
+	return {$: 'SetDestPath', a: a};
+};
+var $author$project$Modele$SetSourcePath = function (a) {
+	return {$: 'SetSourcePath', a: a};
 };
 var $author$project$Css$mainColor = function (v) {
 	switch (v.$) {
@@ -5352,6 +5379,15 @@ var $author$project$Css$flex = function (n) {
 				$elm$core$String$fromInt(n))
 			]));
 };
+var $author$project$Css$FontFamily = function (a) {
+	return {$: 'FontFamily', a: a};
+};
+var $author$project$Css$FontSize = function (a) {
+	return {$: 'FontSize', a: a};
+};
+var $author$project$Css$TextAlign = function (a) {
+	return {$: 'TextAlign', a: a};
+};
 var $author$project$Css$FlexDirection = function (a) {
 	return {$: 'FlexDirection', a: a};
 };
@@ -5362,16 +5398,6 @@ var $author$project$Css$flexDir = function (v) {
 				$author$project$Css$DisplayFlex,
 				$author$project$Css$FlexDirection(v)
 			]));
-};
-var $author$project$Css$flexRow = $author$project$Css$flexDir('row');
-var $author$project$Css$FontFamily = function (a) {
-	return {$: 'FontFamily', a: a};
-};
-var $author$project$Css$FontSize = function (a) {
-	return {$: 'FontSize', a: a};
-};
-var $author$project$Css$TextAlign = function (a) {
-	return {$: 'TextAlign', a: a};
 };
 var $author$project$Css$flexColumn = $author$project$Css$flexDir('column');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -5429,6 +5455,50 @@ var $author$project$View$header = function (_v0) {
 					]))
 			]));
 };
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $author$project$View$view = function (model) {
 	var cssCell = _Utils_ap(
 		$author$project$Css$flex(1),
@@ -5447,65 +5517,40 @@ var $author$project$View$view = function (model) {
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
-				A2(
-					$elm$core$List$cons,
-					A2(
-						$elm$html$Html$div,
-						_Utils_ap(
-							$author$project$Css$flexRow,
-							$author$project$Css$css(
-								_List_fromArray(
-									[
-										$author$project$Css$BorderColor($author$project$Css$Black)
-									]))),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
 						_List_fromArray(
 							[
-								A2(
-								$elm$html$Html$div,
-								cssCell,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Date')
-									])),
-								A2(
-								$elm$html$Html$div,
-								cssCell,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Prix')
-									]))
-							])),
-					A2(
-						$elm$core$List$map,
-						function (e) {
-							return A2(
-								$elm$html$Html$div,
-								_Utils_ap(
-									$author$project$Css$flexRow,
-									$author$project$Css$css(
-										_List_fromArray(
-											[
-												$author$project$Css$BorderColor($author$project$Css$Black)
-											]))),
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$div,
-										cssCell,
-										_List_fromArray(
-											[
-												$elm$html$Html$text(e.name)
-											])),
-										A2(
-										$elm$html$Html$div,
-										cssCell,
-										_List_fromArray(
-											[
-												$elm$html$Html$text(e.path)
-											]))
-									]));
-						},
-						model.elements))),
+								A2($elm$html$Html$Attributes$style, 'font-size', '0.80rem'),
+								$elm$html$Html$Attributes$placeholder('Enter Source Path'),
+								$elm$html$Html$Events$onInput($author$project$Modele$SetSourcePath)
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'font-size', '0.80rem'),
+								$elm$html$Html$Attributes$placeholder('Enter Dest Path'),
+								$elm$html$Html$Events$onInput($author$project$Modele$SetDestPath)
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(model.input.destPath)
+					])),
 				$author$project$View$footer(model)
 			]));
 };

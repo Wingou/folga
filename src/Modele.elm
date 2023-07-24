@@ -6,10 +6,10 @@ import Http
 type alias Model =
     { elements : List Element
     , error : Maybe Http.Error
-    , inputs : Inputs
+    , input : Input
     }
 
-type alias Inputs = {
+type alias Input = {
                 sourcePath : String
                 , destPath : String
                     }
@@ -47,12 +47,13 @@ type alias DateCreat = String
 type alias IsParent = Bool
 
 type Msg
-    = None
+    = SetSourcePath String
+    | SetDestPath String
 
 
 initialModel : Model
 initialModel =
     { error = Nothing
     , elements = []
-    , inputs = {sourcePath = "", destPath=""}
+    , input = {sourcePath = "", destPath=""}
     }

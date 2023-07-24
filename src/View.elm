@@ -8,37 +8,27 @@ import Html.Events exposing (onClick, onInput)
 import Http exposing (Error(..))
 import Maybe exposing (withDefault)
 import Modele exposing (..)
+import Html.Attributes exposing (style)
 
 
 view : Model -> Html Msg
 view model =
-    let
-        cssCell =
-            flex 1 ++ css [ Border "0.1rem", BorderColor Black ]
-    in
     div []
         [ header model
-        , div [] <|
-            div (flexRow ++ css [ BorderColor Black ])
-                [ div cssCell
-                    [ text "Date" ]
-                , div cssCell
-                    [ text "Prix" ]
-           
-                ]
-                :: List.map
-                    (\e ->
-
-                        div (flexRow ++ css [ BorderColor Black ])
-                            [ div cssCell
-                                [ text <| e.name ]
-                            
-                            , div cssCell
-                                [ text e.path ]
-                            
+        , div [] [          
+                        input [style "font-size" "0.80rem" 
+                                    ,  placeholder "Enter Source Path"
+                                    , onInput SetSourcePath ]
+                                    [] 
                             ]
-                    )
-                    model.elements
+        , div [] [          
+                        input [style "font-size" "0.80rem" 
+                                    ,  placeholder "Enter Dest Path"
+                                    , onInput SetDestPath ]
+                                    [] 
+                            ]
+
+        , div [][ text <| model.input.destPath]
         , footer model
         ]
 
